@@ -4,18 +4,30 @@ import (
 	"net/http"
 )
 
+// CRUDController defines the basic Create, Read, Update, and Delete
+// operations for handling HTTP requests in a RESTful API.
 type CRUDController interface {
+	// Create handles the HTTP request to create a new resource.
 	Create(http.ResponseWriter, *http.Request)
+
+	// Read handles the HTTP request to retrieve one or more resources.
 	Read(http.ResponseWriter, *http.Request)
+
+	// Update handles the HTTP request to modify an existing resource.
 	Update(http.ResponseWriter, *http.Request)
+
+	// Delete handles the HTTP request to remove an existing resource.
 	Delete(http.ResponseWriter, *http.Request)
 }
 
-func NvewHandler(bookController CRUDController) http.Handler {
+// NewHandler registers the CRUDController routes for book resources and
+// returns an http.Handler. It maps each HTTP method and endpoint to the
+// corresponding CRUD operation.
+func NewHandler(bookController CRUDController) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("PUT /v1/books", bookController.Create)
 	mux.HandleFunc("GET /v1/books", bookController.Read)
-	mux.HandleFunc("PATCH /v1/books/{id}",bookController.Update)
+	mux.HandleFunc("PATCH /v1/books/{id}", bookController.Update)
 	mux.HandleFunc("DELETE /v1/books/{id}", bookController.Delete)
 
 	return mux

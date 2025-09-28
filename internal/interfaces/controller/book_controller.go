@@ -10,16 +10,20 @@ import (
 	"github.com/Michela-DC/book-club/internal/domain"
 )
 
+// BookInteractor defines the application logic for managing books.
 type BookInteractor interface {
+	// CreateBook creates a new book and persists it in the data store.
 	CreateBook(book *domain.Book) (*domain.Book, error)
 }
 
-// BookController implements [webservice.CRUDController].
+// BookController implements [webservice.CRUDController] to handle
+// HTTP requests related to book resources.
 type BookController struct {
 	interactor BookInteractor
 	logger     *slog.Logger
 }
 
+// NewBookController creates a new BookController with the given interactor and logger.
 func NewBookController(i BookInteractor, l *slog.Logger) *BookController {
 	return &BookController{
 		interactor: i,
@@ -27,6 +31,9 @@ func NewBookController(i BookInteractor, l *slog.Logger) *BookController {
 	}
 }
 
+// Create handles HTTP requests for creating a new book. It decodes
+// the request body, validates the input, creates the book via the
+// interactor, and writes the created book as JSON to the response.
 func (b *BookController) Create(w http.ResponseWriter, r *http.Request) {
 	var cbr CreateBookRequest
 	err := json.NewDecoder(r.Body).Decode(&cbr)
@@ -71,14 +78,20 @@ func (b *BookController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Read handles HTTP requests for retrieving books.
+// Currently, it is not implemented and always returns 501 Not Implemented.
 func (b *BookController) Read(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 }
 
+// Update handles HTTP requests for updating an existing book.
+// Currently, it is not implemented and always returns 501 Not Implemented.
 func (b *BookController) Update(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 }
 
+// Delete handles HTTP requests for deleting a book by ID.
+// Currently, it is not implemented and always returns 501 Not Implemented.
 func (b *BookController) Delete(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 }
