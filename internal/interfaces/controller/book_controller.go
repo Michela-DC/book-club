@@ -14,6 +14,12 @@ import (
 type BookInteractor interface {
 	// CreateBook creates a new book and persists it in the data store.
 	CreateBook(book *domain.Book) (*domain.Book, error)
+	// ReadBooks retrieves a list of books that match the provided filters.
+	ReadBooks(filters *domain.BookFilters) ([]*domain.Book, error)
+	// UpdateBook updates the information of an existing book in the repository.
+	UpdateBook(book *domain.Book) (*domain.Book, error)
+	// DeleteBook removes a book from the repository by its unique ID.
+	DeleteBook(id string) error
 }
 
 // BookController implements [webservice.CRUDController] to handle
