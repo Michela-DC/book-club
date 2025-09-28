@@ -14,7 +14,7 @@ import (
 
 	"github.com/Michela-DC/book-club/internal/domain"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3" // init sql driver
 )
 
 // SQLiteBookRepository provides access to book data stored in a SQLite database.
@@ -24,8 +24,8 @@ type SQLiteBookRepository struct {
 	logger *slog.Logger
 }
 
-// NewSQLiteBookRepository creates a new SQLiteBookRepository using the provided database 
-// file path and logger. It opens the SQLite connection but does not apply migrations. 
+// NewSQLiteBookRepository creates a new SQLiteBookRepository using the provided database
+// file path and logger. It opens the SQLite connection but does not apply migrations.
 func NewSQLiteBookRepository(dbPath string, logger *slog.Logger) (*SQLiteBookRepository, error) {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -58,8 +58,12 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 		repo.logger.With("error", err).Error("failed to read applied migrations")
 		return err
 	}
-	defer rows.Close()
-
+	defer func() {
+		err = rows.Close()
+		if err != nil {
+			repo.logger.With("error", err).Error("failed to close rows")
+		}
+	}()
 	for rows.Next() {
 		var n string
 		err = rows.Scan(&n)
@@ -72,7 +76,7 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 	}
 
 	migrationFiles := make([]string, 0)
-	err = filepath.WalkDir(migrationsPath, func(path string, d fs.DirEntry, err error) error {
+	err = filepath.WalkDir(migrationsPath, func(_ string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -94,6 +98,7 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 			continue
 		}
 
+		//nolint:gosec // we control the file
 		content, err := os.ReadFile(filepath.Join(migrationsPath, file))
 		if err != nil {
 			repo.logger.With("error", err, "filename", file).Error("failed to read migration file")
@@ -152,17 +157,17 @@ func (repo *SQLiteBookRepository) Create(book *domain.Book) (*domain.Book, error
 }
 
 // List retrieves books matching the provided filters. This method is not yet implemented.
-func (repo *SQLiteBookRepository) List(*domain.BookFilters) ([]*domain.Book, error) {
+func (*SQLiteBookRepository) List(*domain.BookFilters) ([]*domain.Book, error) {
 	return nil, errors.New("not yet implemented")
 }
 
 // Update modifies an existing book record in the database. This method is not yet implemented.
-func (repo *SQLiteBookRepository) Update(*domain.Book) error {
+func (*SQLiteBookRepository) Update(*domain.Book) error {
 	return errors.New("not yet implemented")
 }
 
 // Delete removes a book record identified by its ID from the database.
 // This method is not yet implemented.
-func (repo *SQLiteBookRepository) Delete(string) error {
+func (*SQLiteBookRepository) Delete(string) error {
 	return errors.New("not yet implemented")
 }
