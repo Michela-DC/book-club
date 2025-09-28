@@ -34,3 +34,15 @@ func (b *BookInteractor) CreateBook(book *domain.Book) (*domain.Book, error) {
 	}
 	return b.repo.Create(book)
 }
+
+func (b *BookInteractor) ReadBooks(filters *domain.BookFilters) ([]*domain.Book, error) {
+	return nil, errors.New("not implemented")
+}
+	
+func (b *BookInteractor) UpdateBook(book *domain.Book) (*domain.Book, error) {
+	return nil, errors.New("not implemented")
+}
+	
+func (b *BookInteractor) DeleteBook(id string) (error) {
+	return errors.New("not implemented")
+}
