@@ -8,16 +8,16 @@ import (
 // operations for handling HTTP requests in a RESTful API.
 type CRUDController interface {
 	// Create handles the HTTP request to create a new resource.
-	Create(http.ResponseWriter, *http.Request)
+	Create(w http.ResponseWriter, r *http.Request)
 
 	// Read handles the HTTP request to retrieve one or more resources.
-	Read(http.ResponseWriter, *http.Request)
+	Read(w http.ResponseWriter, r *http.Request)
 
 	// Update handles the HTTP request to modify an existing resource.
-	Update(http.ResponseWriter, *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
 
 	// Delete handles the HTTP request to remove an existing resource.
-	Delete(http.ResponseWriter, *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
 }
 
 // NewHandler registers the CRUDController routes for book resources and

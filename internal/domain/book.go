@@ -5,12 +5,12 @@ type Book struct {
 	ID            string     `json:"id"`
 	Title         string     `json:"author"`
 	Author        string     `json:"title"`
-	PublishedYear int        `json:"year"`
 	Status        BookStatus `json:"status"`
-	//TODO: ADD GENRE
+	PublishedYear int        `json:"year"`
+	// TODO: ADD GENRE
 }
 
-// BookStatus defines the current book status for the book club. 
+// BookStatus defines the current book status for the book club.
 // Book lifecycle: SAVED (optional status), SUGGESTED, DISCARDED or READING, COMPLETED.
 type BookStatus string
 
@@ -18,7 +18,7 @@ const (
 	// BookStatusSuggested reppresents the book is beeing considered for reading.
 	BookStatusSuggested BookStatus = "SUGGESTED"
 	// BookStatusReading means the book has been accepted for reading and is currently being read.
-	BookStatusReading   BookStatus = "READING"
+	BookStatusReading BookStatus = "READING"
 	// BookStatusDiscarded means the book has not been approved for reading.
 	BookStatusDiscarded BookStatus = "DISCARDED"
 	// BookStatusCompleted means the book has been read.
@@ -45,11 +45,16 @@ type BookFilters struct {
 	Status        *BookStatus
 }
 
-
-// BookRepository is the book persistency repository
+// BookRepository is the book persistency repository.
+// BookRepository defines the interface for persisting and retrieving books.
+// It abstracts the underlying storage mechanism (e.g., SQLite, in-memory, etc.).
 type BookRepository interface {
-	Create(*Book) (*Book, error)
-	List(*BookFilters) ([]*Book, error)
-	Update(*Book) error
-	Delete(string) error
+	// Create inserts a new book into the repository.
+	Create(book *Book) (*Book, error)
+	// List retrieves all books matching the provided filters.
+	List(filters *BookFilters) ([]*Book, error)
+	// Update modifies an existing book in the repository.
+	Update(book *Book) error
+	// Delete removes a book identified by its unique ID from the repository.
+	Delete(id string) error
 }

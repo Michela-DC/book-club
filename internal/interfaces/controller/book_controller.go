@@ -86,18 +86,18 @@ func (b *BookController) Create(w http.ResponseWriter, r *http.Request) {
 
 // Read handles HTTP requests for retrieving books.
 // Currently, it is not implemented and always returns 501 Not Implemented.
-func (b *BookController) Read(w http.ResponseWriter, r *http.Request) {
+func (*BookController) Read(w http.ResponseWriter, _ *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 }
 
 // Update handles HTTP requests for updating an existing book.
 // Currently, it is not implemented and always returns 501 Not Implemented.
-func (b *BookController) Update(w http.ResponseWriter, r *http.Request) {
+func (*BookController) Update(w http.ResponseWriter, _ *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 }
 
 // Delete handles HTTP requests for deleting a book by ID.
 // Currently, it is not implemented and always returns 501 Not Implemented.
-func (b *BookController) Delete(w http.ResponseWriter, r *http.Request) {
+func (*BookController) Delete(w http.ResponseWriter, _ *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 }

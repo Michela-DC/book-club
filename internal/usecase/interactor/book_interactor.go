@@ -35,14 +35,20 @@ func (b *BookInteractor) CreateBook(book *domain.Book) (*domain.Book, error) {
 	return b.repo.Create(book)
 }
 
-func (b *BookInteractor) ReadBooks(filters *domain.BookFilters) ([]*domain.Book, error) {
+// ReadBooks retrieves a list of books that match the provided filters.
+// TODO: servirá modificare la firma dei metodi con (b *BookInteractor).
+func (*BookInteractor) ReadBooks(_ *domain.BookFilters) ([]*domain.Book, error) {
 	return nil, errors.New("not implemented")
 }
-	
-func (b *BookInteractor) UpdateBook(book *domain.Book) (*domain.Book, error) {
+
+// UpdateBook updates the information of an existing book in the repository.
+// TODO: servirá modificare la firma dei metodi con (b *BookInteractor).
+func (*BookInteractor) UpdateBook(_ *domain.Book) (*domain.Book, error) {
 	return nil, errors.New("not implemented")
 }
-	
-func (b *BookInteractor) DeleteBook(id string) (error) {
+
+// DeleteBook removes a book from the repository by its unique ID.
+// TODO: servirá modificare la firma dei metodi con (b *BookInteractor).
+func (*BookInteractor) DeleteBook(_ string) error {
 	return errors.New("not implemented")
 }
