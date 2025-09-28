@@ -17,11 +17,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// SQLiteBookRepository provides access to book data stored in a SQLite database.
+// It implements [domain.BookRepository].
 type SQLiteBookRepository struct {
 	db     *sql.DB
 	logger *slog.Logger
 }
 
+// NewSQLiteBookRepository creates a new SQLiteBookRepository using the provided database 
+// file path and logger. It opens the SQLite connection but does not apply migrations. 
 func NewSQLiteBookRepository(dbPath string, logger *slog.Logger) (*SQLiteBookRepository, error) {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -35,6 +39,9 @@ func NewSQLiteBookRepository(dbPath string, logger *slog.Logger) (*SQLiteBookRep
 	}, nil
 }
 
+// ApplyMigrations executes all .sql migration files in the given directory
+// that have not already been applied. It records applied migrations in a
+// dedicated migrations table to ensure idempotency.
 func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 	_, err := repo.db.Exec(`CREATE TABLE IF NOT EXISTS migrations(
 		name TEXT PRIMARY KEY,
@@ -126,6 +133,8 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 	return nil
 }
 
+// Create inserts a new book record into the database. If the book has no ID,
+// a new UUID is generated automatically.
 func (repo *SQLiteBookRepository) Create(book *domain.Book) (*domain.Book, error) {
 	if book.ID == "" {
 		book.ID = uuid.NewString()
@@ -142,13 +151,18 @@ func (repo *SQLiteBookRepository) Create(book *domain.Book) (*domain.Book, error
 	return book, nil
 }
 
-// TODO: implement later
+// List retrieves books matching the provided filters. This method is not yet implemented.
 func (repo *SQLiteBookRepository) List(*domain.BookFilters) ([]*domain.Book, error) {
 	return nil, errors.New("not yet implemented")
 }
+
+// Update modifies an existing book record in the database. This method is not yet implemented.
 func (repo *SQLiteBookRepository) Update(*domain.Book) error {
 	return errors.New("not yet implemented")
 }
+
+// Delete removes a book record identified by its ID from the database.
+// This method is not yet implemented.
 func (repo *SQLiteBookRepository) Delete(string) error {
 	return errors.New("not yet implemented")
 }

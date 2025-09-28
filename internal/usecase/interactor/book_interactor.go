@@ -7,11 +7,14 @@ import (
 	"github.com/Michela-DC/book-club/internal/domain"
 )
 
+// BookInteractor provides the application logic for managing books.
+// It coordinates between the domain layer and repositories.
 type BookInteractor struct {
 	repo   domain.BookRepository
 	logger *slog.Logger
 }
 
+// NewBookInteractor creates a new BookInteractor with the given repository and logger.
 func NewBookInteractor(repo domain.BookRepository, logger *slog.Logger) *BookInteractor {
 	return &BookInteractor{
 		repo:   repo,
@@ -19,7 +22,9 @@ func NewBookInteractor(repo domain.BookRepository, logger *slog.Logger) *BookInt
 	}
 }
 
-// define CreateBook as a function of BookInteractor, b is a pointer receiver
+// CreateBook validates the provided book and delegates its creation
+// to the underlying repository. It returns an error if the book is nil,
+// or if the status is invalid for creation (e.g., "completed" or "discarded").
 func (b *BookInteractor) CreateBook(book *domain.Book) (*domain.Book, error) {
 	if book == nil {
 		return nil, errors.New("empty book info")
