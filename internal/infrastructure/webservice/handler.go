@@ -4,13 +4,19 @@ import (
 	"net/http"
 )
 
-type BookController interface {
+type CRUDController interface {
 	Create(http.ResponseWriter, *http.Request)
+	Read(http.ResponseWriter, *http.Request)
+	Update(http.ResponseWriter, *http.Request)
+	Delete(http.ResponseWriter, *http.Request)
 }
 
-func NewHandler(bookController BookController) http.Handler {
+func NvewHandler(bookController CRUDController) http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /books", bookController.Create)
+	mux.HandleFunc("PUT /v1/books", bookController.Create)
+	mux.HandleFunc("GET /v1/books", bookController.Read)
+	mux.HandleFunc("PATCH /v1/books/{id}",bookController.Update)
+	mux.HandleFunc("DELETE /v1/books/{id}", bookController.Delete)
 
 	return mux
 }

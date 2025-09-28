@@ -18,7 +18,7 @@ go run ./cmd/book-club
 
 Create a Book:
 ```
-curl -X POST http://localhost:8080/books \
+curl -X PUT http://localhost:8080/books \
   -H "Content-Type: application/json" \
   -d '{
     "author": "Alan A. A. Donovan & Brian W. Kernighan",

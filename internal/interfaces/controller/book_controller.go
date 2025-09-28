@@ -14,6 +14,7 @@ type BookInteractor interface {
 	CreateBook(book *domain.Book) (*domain.Book, error)
 }
 
+// BookController implements [webservice.CRUDController].
 type BookController struct {
 	interactor BookInteractor
 	logger     *slog.Logger
@@ -68,4 +69,16 @@ func (b *BookController) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (b *BookController) Read(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+}
+
+func (b *BookController) Update(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+}
+
+func (b *BookController) Delete(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 }
