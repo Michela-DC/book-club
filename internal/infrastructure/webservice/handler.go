@@ -9,13 +9,10 @@ import (
 type CRUDController interface {
 	// Create handles the HTTP request to create a new resource.
 	Create(w http.ResponseWriter, r *http.Request)
-
 	// Read handles the HTTP request to retrieve one or more resources.
 	Read(w http.ResponseWriter, r *http.Request)
-
 	// Update handles the HTTP request to modify an existing resource.
 	Update(w http.ResponseWriter, r *http.Request)
-
 	// Delete handles the HTTP request to remove an existing resource.
 	Delete(w http.ResponseWriter, r *http.Request)
 }

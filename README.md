@@ -18,7 +18,7 @@ go run ./cmd/book-club
 
 Create a Book:
 ```
-curl -X PUT http://localhost:8080/books \
+curl -X PUT http://localhost:8080/v1/books \
   -H "Content-Type: application/json" \
   -d '{
     "author": "Alan A. A. Donovan & Brian W. Kernighan",
@@ -29,4 +29,24 @@ curl -X PUT http://localhost:8080/books \
 
 ```
 
+Read all Books:
+```
+curl -X GET http://localhost:8080/v1/books \
+  -H "Content-Type: application/json" 
+
+```
+
+Update a Book:
+```
+curl -X PATCH http://localhost:8080/v1/books/{id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "author": "Alan A. Donovan & Brian W. Kernighan",
+    "title": "The Go Programming Language",
+    "year": 2015,
+    "status": "SUGGESTED",
+    "genre" :  "education"
+  }'
+
+```
 

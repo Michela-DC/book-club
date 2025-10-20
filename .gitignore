@@ -32,4 +32,8 @@ go.work.sum
 .vscode/
 
 # db files
-database/data/
+books.db
+
+# Notes
+TODO.txt
+Appunti.txt

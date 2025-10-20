@@ -1,13 +1,15 @@
 package domain
 
+import "context"
+
 // Book is the main entity.
 type Book struct {
 	ID            string     `json:"id"`
 	Title         string     `json:"author"`
 	Author        string     `json:"title"`
+	Genre         *string    `json:"genre"`
+	PublishedYear *int       `json:"year"`
 	Status        BookStatus `json:"status"`
-	PublishedYear int        `json:"year"`
-	// TODO: ADD GENRE
 }
 
 // BookStatus defines the current book status for the book club.
@@ -41,6 +43,7 @@ type BookFilters struct {
 	ID            *string
 	Title         *string
 	Author        *string
+	Genre         *string
 	PublishedYear *int
 	Status        *BookStatus
 }
@@ -50,11 +53,11 @@ type BookFilters struct {
 // It abstracts the underlying storage mechanism (e.g., SQLite, in-memory, etc.).
 type BookRepository interface {
 	// Create inserts a new book into the repository.
-	Create(book *Book) (*Book, error)
+	Create(ctx context.Context, book *Book) (*Book, error)
 	// List retrieves all books matching the provided filters.
-	List(filters *BookFilters) ([]*Book, error)
+	List(ctx context.Context, filters *BookFilters) ([]*Book, error)
 	// Update modifies an existing book in the repository.
-	Update(book *Book) error
+	Update(ctx context.Context, book *Book) error
 	// Delete removes a book identified by its unique ID from the repository.
-	Delete(id string) error
+	Delete(ctx context.Context, id string) error
 }

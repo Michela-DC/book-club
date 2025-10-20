@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"io/fs"
@@ -42,8 +43,8 @@ func NewSQLiteBookRepository(dbPath string, logger *slog.Logger) (*SQLiteBookRep
 // ApplyMigrations executes all .sql migration files in the given directory
 // that have not already been applied. It records applied migrations in a
 // dedicated migrations table to ensure idempotency.
-func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
-	_, err := repo.db.Exec(`CREATE TABLE IF NOT EXISTS migrations(
+func (repo *SQLiteBookRepository) ApplyMigrations(ctx context.Context, migrationsPath string) error {
+	_, err := repo.db.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS migrations(
 		name TEXT PRIMARY KEY,
 		applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);`)
@@ -53,7 +54,7 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 	}
 
 	appliedMigrations := make(map[string]struct{}, 0)
-	rows, err := repo.db.Query(`SELECT name FROM migrations`)
+	rows, err := repo.db.QueryContext(ctx, `SELECT name FROM migrations`)
 	if err != nil {
 		repo.logger.With("error", err).Error("failed to read applied migrations")
 		return err
@@ -73,6 +74,10 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 		}
 
 		appliedMigrations[n] = struct{}{}
+	}
+	if err = rows.Err(); err != nil {
+		repo.logger.With("error", err).Error("failed to read migrations")
+		return err
 	}
 
 	migrationFiles := make([]string, 0)
@@ -107,18 +112,18 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 
 		repo.logger.With("filename", file).Info("applying migration")
 
-		tx, err := repo.db.Begin()
+		tx, err := repo.db.BeginTx(ctx, nil)
 		if err != nil {
 			repo.logger.With("error", err, "filename", file).Error("failed to start transaction")
 			return err
 		}
-		_, err = tx.Exec(string(content))
+		_, err = tx.ExecContext(ctx, string(content))
 		if err != nil {
 			repo.logger.With("error", err, "filename", file).Error("failed to apply migration")
 			return err
 		}
 
-		_, err = tx.Exec(`INSERT INTO migrations(name) VALUES (?)`, file)
+		_, err = tx.ExecContext(ctx, `INSERT INTO migrations(name) VALUES (?)`, file)
 		if err != nil {
 			repo.logger.With("error", err, "filename", file).Error("failed to store migration")
 			return err
@@ -140,13 +145,13 @@ func (repo *SQLiteBookRepository) ApplyMigrations(migrationsPath string) error {
 
 // Create inserts a new book record into the database. If the book has no ID,
 // a new UUID is generated automatically.
-func (repo *SQLiteBookRepository) Create(book *domain.Book) (*domain.Book, error) {
+func (repo *SQLiteBookRepository) Create(ctx context.Context, book *domain.Book) (*domain.Book, error) {
 	if book.ID == "" {
 		book.ID = uuid.NewString()
 	}
-	_, err := repo.db.Exec(
-		`INSERT INTO books (id, title, author, published_year, status)
-		 VALUES (?, ?, ?, ?, ?);`, book.ID, book.Title, book.Author, book.PublishedYear, book.Status,
+	_, err := repo.db.ExecContext(ctx,
+		`INSERT INTO books (id, title, author, genre, published_year, status)
+		 VALUES (?, ?, ?, ?, ?, ?);`, book.ID, book.Title, book.Author, book.Genre, book.PublishedYear, book.Status,
 	)
 	if err != nil {
 		repo.logger.With("error", err).Error("failed to insert new record")
@@ -157,17 +162,35 @@ func (repo *SQLiteBookRepository) Create(book *domain.Book) (*domain.Book, error
 }
 
 // List retrieves books matching the provided filters. This method is not yet implemented.
-func (*SQLiteBookRepository) List(*domain.BookFilters) ([]*domain.Book, error) {
+func (*SQLiteBookRepository) List(context.Context, *domain.BookFilters) ([]*domain.Book, error) {
 	return nil, errors.New("not yet implemented")
 }
 
-// Update modifies an existing book record in the database. This method is not yet implemented.
-func (*SQLiteBookRepository) Update(*domain.Book) error {
-	return errors.New("not yet implemented")
+// Update modifies an existing book record in the database.
+func (repo *SQLiteBookRepository) Update(ctx context.Context, book *domain.Book) error {
+	if book.ID == "" {
+		return errors.New("book id cannot be empty")
+	}
+	_, err := repo.db.ExecContext(ctx,
+		`UPDATE books
+		SET title = ?, 
+		author = ?, 
+		genre = ?, 
+		published_year = ?, 
+		status = ?
+		where id = ?;`,
+		book.Title, book.Author, book.Genre, book.PublishedYear, book.Status, book.ID,
+	)
+	if err != nil {
+		repo.logger.With("error", err, "id", book.ID).Error("failed to update book")
+		return err
+	}
+
+	return nil
 }
 
 // Delete removes a book record identified by its ID from the database.
 // This method is not yet implemented.
-func (*SQLiteBookRepository) Delete(string) error {
+func (*SQLiteBookRepository) Delete(context.Context, string) error {
 	return errors.New("not yet implemented")
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"log/slog"
 	"net/http"
@@ -25,7 +26,7 @@ func main() {
 		panic(err)
 	}
 
-	err = repo.ApplyMigrations("database/migrations")
+	err = repo.ApplyMigrations(context.Background(), "database/migrations")
 	if err != nil {
 		panic(err)
 	}
