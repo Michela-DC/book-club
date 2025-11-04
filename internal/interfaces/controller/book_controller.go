@@ -3,17 +3,19 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
 
 	"github.com/google/uuid"
 
 	"github.com/Michela-DC/book-club/internal/domain"
+	"github.com/Michela-DC/book-club/internal/infrastructure/db"
 	"github.com/Michela-DC/book-club/pkg/utilities"
 )
 
-// BookService defines the application logic for managing books.
-type BookService interface {
+// BookInteractor defines the application logic for managing books.
+type BookInteractor interface {
 	// CreateBook creates a new book and persists it in the data store.
 	CreateBook(ctx context.Context, book *domain.Book) (*domain.Book, error)
 	// ReadBooks retrieves a Read of books that match the provided filters.
@@ -21,27 +23,27 @@ type BookService interface {
 	// UpdateBook updates the information of an existing book in the repository.
 	UpdateBook(ctx context.Context, book *domain.Book) (*domain.Book, error)
 	// DeleteBook removes a book from the repository by its unique ID.
-	DeleteBook(id string) error
+	DeleteBook(ctx context.Context, id string) error
 }
 
 // BookController implements [webservice.CRUDController] to handle
 // HTTP requests related to book resources.
 type BookController struct {
-	service BookService
-	logger  *slog.Logger
+	interactor BookInteractor
+	logger     *slog.Logger
 }
 
-// NewBookController creates a new BookController with the given service and logger.
-func NewBookController(s BookService, l *slog.Logger) *BookController {
+// NewBookController creates a new BookController with the given interactor and logger.
+func NewBookController(i BookInteractor, l *slog.Logger) *BookController {
 	return &BookController{
-		service: s,
-		logger:  l,
+		interactor: i,
+		logger:     l,
 	}
 }
 
 // Create handles HTTP requests for creating a new book. It decodes
 // the request body, validates the input, creates the book via the
-// service, and writes the created book as JSON to the response.
+// interactor and writes the created book as JSON to the response.
 func (b *BookController) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var cbr CreateBookRequest
@@ -61,7 +63,7 @@ func (b *BookController) Create(w http.ResponseWriter, r *http.Request) {
 
 	status := domain.StringToBookStatusMap[cbr.Status]
 
-	book, err := b.service.CreateBook(ctx, &domain.Book{
+	book, err := b.interactor.CreateBook(ctx, &domain.Book{
 		ID:            uuid.NewString(),
 		Title:         cbr.Title,
 		Author:        cbr.Author,
@@ -119,7 +121,7 @@ func (b *BookController) Update(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	book, err := b.service.UpdateBook(ctx, &domain.Book{
+	book, err := b.interactor.UpdateBook(ctx, &domain.Book{
 		ID:            uuid.NewString(),
 		Title:         utilities.Optional(ubr.Title),
 		Author:        utilities.Optional(ubr.Author),
@@ -142,7 +144,22 @@ func (b *BookController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete handles HTTP requests for deleting a book by ID.
-// Currently, it is not implemented and always returns 501 Not Implemented.
-func (*BookController) Delete(w http.ResponseWriter, _ *http.Request) {
-	http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+func (b *BookController) Delete(w http.ResponseWriter, r *http.Request) {
+	// TODO: handle not found
+	ctx := r.Context()
+	bookID := r.PathValue("id")
+
+	err := b.interactor.DeleteBook(ctx, bookID)
+
+	if err != nil {
+		b.logger.With("error", err).Error("unable to delete book")
+		if errors.Is(err, db.ErrorNotFound) {
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		}
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	b.logger.With("id", bookID).Info("book deleted")
 }

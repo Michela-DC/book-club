@@ -50,3 +50,10 @@ curl -X PATCH http://localhost:8080/v1/books/{id} \
 
 ```
 
+Delete Book:
+```
+curl -X DELETE http://localhost:8080/v1/books/{id} \
+  -H "Content-Type: application/json" 
+
+```
+

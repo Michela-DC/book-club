@@ -18,6 +18,9 @@ import (
 	_ "github.com/mattn/go-sqlite3" // init sql driver
 )
 
+// ErrorNotFound is the sentinel error when no rows are found.
+var ErrorNotFound = errors.New("not found")
+
 // SQLiteBookRepository provides access to book data stored in a SQLite database.
 // It implements [domain.BookRepository].
 type SQLiteBookRepository struct {
@@ -190,7 +193,23 @@ func (repo *SQLiteBookRepository) Update(ctx context.Context, book *domain.Book)
 }
 
 // Delete removes a book record identified by its ID from the database.
-// This method is not yet implemented.
-func (*SQLiteBookRepository) Delete(context.Context, string) error {
-	return errors.New("not yet implemented")
+func (repo *SQLiteBookRepository) Delete(ctx context.Context, bookID string) error {
+	res, err := repo.db.ExecContext(ctx, "DELETE FROM books WHERE id = ?", bookID)
+
+	if err != nil {
+		repo.logger.With("error", err, "id", bookID).Error("failed to delete book")
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		repo.logger.With("error", err).Error("unable to get rows affected by the delete")
+		return err
+	}
+	if count == 0 {
+		repo.logger.With("count", count).Error("no rows affected")
+		return ErrorNotFound
+	}
+
+	return nil
 }

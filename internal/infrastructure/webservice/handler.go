@@ -26,6 +26,5 @@ func NewHandler(bookController CRUDController) http.Handler {
 	mux.HandleFunc("GET /v1/books", bookController.Read)
 	mux.HandleFunc("PATCH /v1/books/{id}", bookController.Update)
 	mux.HandleFunc("DELETE /v1/books/{id}", bookController.Delete)
-
 	return mux
 }

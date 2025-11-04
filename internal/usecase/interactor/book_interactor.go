@@ -43,7 +43,6 @@ func (*BookInteractor) ReadBooks(_ *domain.BookFilters) ([]*domain.Book, error) 
 }
 
 // UpdateBook updates the information of an existing book in the repository.
-// TODO: servirá modificare la firma dei metodi con (b *BookInteractor).
 func (b *BookInteractor) UpdateBook(ctx context.Context, book *domain.Book) (*domain.Book, error) {
 	if book == nil {
 		return nil, errors.New("book not found")
@@ -53,7 +52,9 @@ func (b *BookInteractor) UpdateBook(ctx context.Context, book *domain.Book) (*do
 }
 
 // DeleteBook removes a book from the repository by its unique ID.
-// TODO: servirá modificare la firma dei metodi con (b *BookInteractor).
-func (*BookInteractor) DeleteBook(_ string) error {
-	return errors.New("not implemented")
+func (b *BookInteractor) DeleteBook(ctx context.Context, bookID string) error {
+	if bookID == "" {
+		return errors.New("id cannot be empty")
+	}
+	return b.repo.Delete(ctx, bookID)
 }

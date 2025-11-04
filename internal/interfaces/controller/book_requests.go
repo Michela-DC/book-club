@@ -19,7 +19,6 @@ type CreateBookRequest struct {
 }
 
 // UpdateBookRequest represents the payload required to update a book.
-// It is typically decoded from the JSON body of an HTTP request.
 type UpdateBookRequest struct {
 	Title  *string `json:"title"`
 	Author *string `json:"author"`
