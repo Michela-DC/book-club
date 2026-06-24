@@ -1,0 +1,24 @@
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 6px 24px var(--shadow-lg);
+  border-left: 4px solid var(--leather);
+  z-index: 300;
+  animation: slideUp 0.28s ease forwards;
+}
+
+.toast.error {
+  border-left-color: var(--danger);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

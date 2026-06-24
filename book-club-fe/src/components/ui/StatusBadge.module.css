@@ -1,0 +1,15 @@
+.badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.to_read  { background: #E5E2DF; color: var(--muted); }
+.reading  { background: #D4EAD9; color: #2D6B3F; }
+.completed { background: #EAE0D0; color: #6B5030; }
+.discarded { background: var(--danger-light); color: var(--danger); }

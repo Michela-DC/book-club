@@ -1,4 +1,4 @@
-# book-club
+# book-club-be
 
 A simple book club REST API following the Clean Architecture principles.
 

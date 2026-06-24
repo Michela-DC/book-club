@@ -1,0 +1,48 @@
+.form { display: flex; flex-direction: column; gap: 0; }
+
+.row { margin-bottom: 18px; }
+
+.label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid var(--parchment);
+  border-radius: var(--radius-sm);
+  background: white;
+  font-size: 0.9rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.input:focus { border-color: var(--leather); }
+.inputError { border-color: var(--danger) !important; }
+
+.error {
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin-top: 4px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.actions button:last-child { flex: 1; }

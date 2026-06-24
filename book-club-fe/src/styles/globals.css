@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* --ink: #1C1917;
+  --paper: #FAF7F2;
+  --leather: #8B6F47;
+  --forest: #4A7C59;
+  --parchment: #C4A882;
+  --parchment-light: #EDE3D5;
+  --muted: #6B6560;
+  --danger: #9B3A3A;
+  --danger-light: #F0D8D8;
+  --shadow: rgba(28, 25, 23, 0.12);
+  --shadow-lg: rgba(28, 25, 23, 0.22); */
+
+
+  --ink: #37352F; 
+  --paper: #DCDCDC;
+  --leather: #C87A53;
+  --forest: #448361;
+  --parchment: #E3E2E0;
+  --parchment-light: #F1F0EC;
+  --muted: #787774;
+  --danger: #D44242;
+  --danger-light: #FDECEC;
+  --shadow: rgba(15, 15, 15, 0.05);
+  --shadow-lg: rgba(15, 15, 15, 0.1);
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  --transition: 0.2s ease;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  border: none;
+  background: none;
+}
+
+input, select, textarea {
+  font-family: var(--font-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
