@@ -16,32 +16,33 @@ The React Compiler is not enabled on this template because of its impact on dev 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
 Project structure:
-
+```
 book-club/
-├── .env.example              ← set VITE_API_URL here
-├── src/
-│   ├── api/
-│   │   ├── books.js          ← all fetch calls (GET/PUT/PATCH/DELETE)
-│   │   └── constants.js      ← status labels, filter tabs, demo data
-│   ├── context/
-│   │   └── BooksContext.jsx  ← useReducer global state + action hooks
-│   ├── hooks/
-│   │   ├── useFilter.js      ← tab filtering logic
-│   │   └── useToast.js       ← toast notification hook
-│   ├── components/
-│   │   ├── ui/
-│   │   │   ├── Button        ← primary / secondary / danger / ghost variants
-│   │   │   ├── Modal         ← accessible overlay, Esc to close
-│   │   │   ├── Header        ← sticky top bar
-│   │   │   ├── StatusBadge   ← color-coded status pill
-│   │   │   └── Toast         ← bottom-right notification
-│   │   └── books/
-│   │       ├── BookCard      ← spine-style card with hover tilt
-│   │       ├── BookForm      ← controlled form with validation
-│   │       ├── BookGrid      ← grid + loading + empty states
-│   │       └── FilterTabs    ← status tabs with live counts
-│   ├── pages/
-│   │   └── BookShelf.jsx     ← main page, wires everything together
-│   ├── styles/
-│   │   └── globals.css       ← CSS variables, resets, Google Fonts
-│   └── App.jsx               ← BooksProvider + BrowserRouter
+├── .env.example              <- set VITE_API_URL here
+└── src/
+    ├── api/
+    │   ├── books.js          <- all fetch calls (GET/PUT/PATCH/DELETE)
+    │   └── constants.js      <- status labels, filter tabs, demo data
+    ├── context/
+    │   └── BooksContext.jsx  <- useReducer global state + action hooks
+    ├── hooks/
+    │   ├── useFilter.js      <- tab filtering logic
+    │   └── useToast.js       <- toast notification hook
+    ├── components/
+    │   ├── ui/
+    │   │   ├── Button        <- primary / secondary / danger / ghost variants
+    │   │   ├── Modal         <- accessible overlay, Esc to close
+    │   │   ├── Header        <- sticky top bar
+    │   │   ├── StatusBadge   <- color-coded status pill
+    │   │   └── Toast         <- bottom-right notification
+    │   └── books/
+    │       ├── BookCard      <- spine-style card with hover tilt
+    │       ├── BookForm      <- controlled form with validation
+    │       ├── BookGrid      <- grid + loading + empty states
+    │       └── FilterTabs    <- status tabs with live counts
+    ├── pages/
+    │   └── BookShelf.jsx     <- main page, wires everything together
+    ├── styles/
+    │   └── globals.css       <- CSS variables, resets, Google Fonts
+    └── App.jsx               <- BooksProvider + BrowserRouter
+```
